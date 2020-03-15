@@ -1,13 +1,12 @@
-//
-//  RNTWechat.h
-//  RNTWechat
-//
-//  Created by zhujl on 2020/3/15.
-//  Copyright © 2020 finstao. All rights reserved.
-//
+#import <React/RCTEventEmitter.h>
+#import "WXApi.h"
 
-#import <Foundation/Foundation.h>
+@interface RNTWechat : RCTEventEmitter <WXApiDelegate>
 
-@interface RNTWechat : NSObject
++ (void)init:(NSString *)appId universalLink:(NSString *)universalLink loadImage:(void (^)(NSString*, void (^)(UIImage*)))loadImage;
+
++ (BOOL)handleOpenURL:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options;
+
++ (BOOL)handleOpenUniversalLink:(NSUserActivity *)userActivity;
 
 @end

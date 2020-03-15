@@ -1,0 +1,24 @@
+{
+  "name": "react-native-pure-wechat",
+  "version": "0.0.1",
+  "description": "react native wechat",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/musicode/react-native-pure-wechat.git"
+  },
+  "keywords": [
+    "react",
+    "native",
+    "wechat"
+  ],
+  "author": "musicode",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/musicode/react-native-pure-wechat/issues"
+  },
+  "homepage": "https://github.com/musicode/react-native-pure-wechat#readme"
+}

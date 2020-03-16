@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -17,8 +18,9 @@ import com.tencent.mm.opensdk.modelmsg.*
 import com.tencent.mm.opensdk.openapi.IWXAPI
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
-import java.nio.ByteBuffer
+import java.io.ByteArrayOutputStream
 import java.util.*
+
 
 class RNTWechatModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), IWXAPIEventHandler {
 
@@ -128,6 +130,11 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
         req.transaction = createUUID()
         req.message = msg
         req.scene = options.getInt("scene")
+
+        // 这个参数貌似是新版 SDK 加的，以前用的版本没传过这个参数
+        if (options.hasKey("open_id")) {
+            req.userOpenId = options.getString("open_id")
+        }
 
         val map = Arguments.createMap()
         map.putBoolean("success", api.sendReq(req))
@@ -491,12 +498,18 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
     private fun bitmap2ByteArray(bitmap: Bitmap): ByteArray {
 
-        val byteCount = bitmap.byteCount
+        val output = ByteArrayOutputStream()
+        bitmap.compress(CompressFormat.PNG, 100, output)
+        bitmap.recycle()
 
-        val buffer = ByteBuffer.allocate(byteCount)
-        bitmap.copyPixelsToBuffer(buffer)
+        val result: ByteArray = output.toByteArray()
+        try {
+            output.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
-        return buffer.array()
+        return result
 
     }
 

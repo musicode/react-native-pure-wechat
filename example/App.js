@@ -48,22 +48,6 @@ const App: () => React$Node = () => {
             }}
           />
           <Button
-            title="getInstallUrl"
-            onPress={() => {
-              Wechat.getInstallUrl().then(data => {
-                console.log('getInstallUrl', data)
-              })
-            }}
-          />
-          <Button
-            title="getApiVersion"
-            onPress={() => {
-              Wechat.getApiVersion().then(data => {
-                console.log('getApiVersion', data)
-              })
-            }}
-          />
-          <Button
             title="open"
             onPress={() => {
               Wechat.open().then(data => {

@@ -1,6 +1,11 @@
 # react-native-pure-wechat
 
-This is a module which help you get screen wechat info.
+封装微信 SDK，支持 `微信登录` 和 `微信分享`。
+
+SDK 版本：
+
+* ios: 1.8.6
+* android: 最新版（写文档此刻是 5.5.8）
 
 ## Installation
 
@@ -57,20 +62,123 @@ react-native link react-native-pure-wechat
 
 ### Android
 
-`android/build.gradle` add the umeng maven repo.
+在 [微信开放平台](https://open.weixin.qq.com/) 获取 `appId`。
 
-```
-allprojects {
-    repositories {
-        // add this line
-        maven { url 'https://dl.bintray.com/umsdk/release' }
+在你的包名相应目录下新建一个 `wxapi` 目录，并在该 `wxapi` 目录下新增一个 `WXEntryActivity` 类，该类继承自 `Activity`。
+
+```kotlin
+package your-package-name.wxapi
+
+import android.app.Activity
+import android.os.Bundle
+
+import com.theweflex.react.RNTWeChatModule
+
+class WXEntryActivity : Activity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        RNTWeChatModule.handleIntent(this.intent)
+        finish()
     }
+
+}
+```
+
+在 `manifest` 文件里面加上 `exported`、`taskAffinity` 及 `launchMode` 属性，其中 `exported` 设置为 `true`， `taskAffinity` 设置为你的包名，`launchMode` 设置为 `singleTask`：
+
+```xml
+<activity
+    android:name=".wxapi.WXEntryActivity"
+    android:label="@string/app_name"
+    android:theme="@android:style/Theme.Translucent.NoTitleBar"
+    android:exported="true"
+    android:taskAffinity="填写你的包名"
+    android:launchMode="singleTask">
+</activity>
+```
+
+最后，在 `MainApplication` 的 `onCreate` 方法进行初始化：
+
+```kotlin
+override fun onCreate() {
+  RNTWechatModule.init(
+    this,
+    "appId",
+    (url: String, completion: (String) -> Unit) {
+      // 加载网络图片
+      // 加载成功后调用 completion
+    }
+  )
 }
 ```
 
 ## Usage
 
 ```js
-import wechat from 'react-native-pure-wechat'
+
+import wechat, {
+  // 分享给朋友
+  SCENE_SESSION,
+  // 分享到朋友圈
+  SCENE_TIMELINE,
+  // 分享到收藏
+  SCENE_FAVORITE,
+} from 'react-native-pure-wechat'
+
+// 微信登录
+wechat.sendAuthRequest({
+  scope: 'snsapi_userinfo'
+})
+.then(response => {
+  response.code
+})
+
+// 分享文本
+wechat.shareText({
+  text: 'xxxxx',
+  scene: SCENE_SESSION,
+})
+
+// 分享图片
+wechat.shareImage({
+  image_url: 'https://xxx',
+  scene: SCENE_SESSION,
+})
+
+// 分享音频
+wechat.shareAudio({
+  // 音频网页地址
+  page_url: 'https://xxx',
+  // 音频地址
+  audio_url: 'https://xxx',
+  // 缩略图地址，支持网络图片和本地图片
+  thumbnail_url: 'https://xxx',
+  title: '',
+  description: '',
+  scene: SCENE_SESSION,
+})
+
+// 分享视频
+wechat.shareVideo({
+  // 视频地址
+  video_url: 'https://xxx',
+  // 缩略图地址，支持网络图片和本地图片
+  thumbnail_url: 'https://xxx',
+  title: '',
+  description: '',
+  scene: SCENE_SESSION,
+})
+
+// 分享网页
+wechat.sharePage({
+  // 网页地址
+  page_url: 'https://xxx',
+  // 缩略图地址，支持网络图片和本地图片
+  thumbnail_url: 'https://xxx',
+  title: '',
+  description: '',
+  scene: SCENE_SESSION,
+})
 
 ```

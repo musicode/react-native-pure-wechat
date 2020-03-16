@@ -8,7 +8,7 @@
 RNTWechat *wechatInstance;
 
 NSString *wechatAuthResponse = @"wechatAuthResponse";
-NSString *wechatShareResponse = @"wechatShareResponse";
+NSString *wechatMessageResponse = @"wechatMessageResponse";
 
 typeof(void (^)(NSString*, void (^)(UIImage*))) wechatLoadImage;
 
@@ -18,17 +18,7 @@ RCT_EXPORT_MODULE(RNTWechat);
 
 + (void)init:(NSString *)appId universalLink:(NSString *)universalLink loadImage:(void (^)(NSString*, void (^)(UIImage*)))loadImage {
     wechatLoadImage = loadImage;
-    
-    RCTLogInfo(appId);
-    RCTLogInfo(universalLink);
-    BOOL success = [WXApi registerApp:appId universalLink:universalLink];
-    if (success) {
-       RCTLogInfo(@"registerApp success");
-    }
-    else {
-       RCTLogInfo(@"registerApp failed");
-    }
-    
+    [WXApi registerApp:appId universalLink:universalLink];
 }
 
 + (BOOL)handleOpenURL:(UIApplication *)application openURL:(NSURL *)url
@@ -59,8 +49,8 @@ options:(NSDictionary<NSString*, id> *)options {
                                             object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                            selector:@selector(handleShareResponse:)
-                                            name:wechatShareResponse
+                                            selector:@selector(handleMessageResponse:)
+                                            name:wechatMessageResponse
                                             object:nil];
         
     }
@@ -75,17 +65,17 @@ options:(NSDictionary<NSString*, id> *)options {
 
 - (NSArray<NSString *> *)supportedEvents {
   return @[
-      @"auth",
-      @"share",
+      @"auth_response",
+      @"message_response",
   ];
 }
 
 - (void)handleAuthResponse:(NSNotification *)notification {
-    [self sendEventWithName:@"auth" body:notification.object];
+    [self sendEventWithName:@"auth_response" body:notification.object];
 }
 
-- (void)handleShareResponse:(NSNotification *)notification {
-    [self sendEventWithName:@"share" body:notification.object];
+- (void)handleMessageResponse:(NSNotification *)notification {
+    [self sendEventWithName:@"message_response" body:notification.object];
 }
 
 - (void) onReq:(BaseReq *)req {
@@ -93,17 +83,23 @@ options:(NSDictionary<NSString*, id> *)options {
 }
 
 - (void) onResp:(BaseResp *)resp {
+    
+    if (resp == nil) {
+        return;
+    }
+    
+    NSMutableDictionary *body = [[NSMutableDictionary alloc] init];
+    body[@"err_code"] = @(resp.errCode);
+    body[@"err_str"] = resp.errStr;
+    
     // 微信登录
     if ([resp isKindOfClass:[SendAuthResp class]]) {
         
         SendAuthResp *r = (SendAuthResp *)resp;
         
-        NSMutableDictionary *body = [[NSMutableDictionary alloc] init];
-        body[@"err_code"] = @(r.errCode);
-        body[@"err_str"] = r.errStr;
-        body[@"state"] = r.state;
         body[@"lang"] = r.lang;
         body[@"country"] = r.country;
+        body[@"state"] = r.state;
         
         if (resp.errCode == WXSuccess) {
             body[@"code"] = r.code;
@@ -117,13 +113,10 @@ options:(NSDictionary<NSString*, id> *)options {
         
         SendMessageToWXResp *r = (SendMessageToWXResp *)resp;
     
-        NSMutableDictionary *body = [[NSMutableDictionary alloc] init];
-        body[@"err_code"] = @(r.errCode);
-        body[@"err_str"] = r.errStr;
         body[@"lang"] = r.lang;
         body[@"country"] = r.country;
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:wechatShareResponse object:body];
+        [[NSNotificationCenter defaultCenter] postNotificationName:wechatMessageResponse object:body];
 
     }
 }
@@ -141,22 +134,6 @@ RCT_EXPORT_METHOD(isSupportOpenApi:(RCTPromiseResolveBlock)resolve
     BOOL supported = [WXApi isWXAppSupportApi];
     resolve(@{
         @"supported": @(supported)
-    });
-}
-
-RCT_EXPORT_METHOD(getInstallUrl:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
-    NSString *url = [WXApi getWXAppInstallUrl];
-    resolve(@{
-        @"url": url
-    });
-}
-
-RCT_EXPORT_METHOD(getApiVersion:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
-    NSString *version = [WXApi getApiVersion];
-    resolve(@{
-        @"version": version
     });
 }
 

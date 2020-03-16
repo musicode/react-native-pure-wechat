@@ -6,9 +6,9 @@ const { RNTWechat } = NativeModules
 const eventEmitter = new NativeEventEmitter(RNTWechat)
 
 let resolveAuth
-let resolveShare
+let resolveMessage
 
-eventEmitter.addListener('auth', function (data) {
+eventEmitter.addListener('auth_response', function (data) {
   console.log('auth response', data)
   if (resolveAuth) {
     resolveAuth(data)
@@ -16,11 +16,11 @@ eventEmitter.addListener('auth', function (data) {
   }
 })
 
-eventEmitter.addListener('share', function (data) {
+eventEmitter.addListener('message_response', function (data) {
   console.log('share response', data)
-  if (resolveShare) {
-    resolveShare(data)
-    resolveShare = null
+  if (resolveMessage) {
+    resolveMessage(data)
+    resolveMessage = null
   }
 })
 
@@ -28,7 +28,7 @@ function shareMessage(promise) {
   return promise.then(data => {
     if (data.success) {
       return new Promise(resolve => {
-        resolveShare = resolve
+        resolveMessage = resolve
       })
     }
     return data
@@ -41,6 +41,13 @@ export const SCENE_SESSION = 0
 export const SCENE_TIMELINE = 1
 // 分享到收藏
 export const SCENE_FAVORITE = 0
+
+// 小程序类型 - 正式版
+export const MINI_PROGRAM_RELEASE = 0
+// 小程序类型 - 测试版
+export const MINI_PROGRAM_TEST = 1
+// 小程序类型 - 预览版
+export const MINI_PROGRAM_PREVIEW = 2
 
 export default {
 
@@ -56,20 +63,6 @@ export default {
    */
   isSupportOpenApi() {
     return RNTWechat.isSupportOpenApi()
-  },
-
-  /**
-   * 获取微信的 itunes 安装地址
-   */
-  getInstallUrl() {
-    return RNTWechat.getInstallUrl()
-  },
-
-  /**
-   * 获取当前微信 SDK 的版本号
-   */
-  getApiVersion() {
-    return RNTWechat.getApiVersion()
   },
 
   /**

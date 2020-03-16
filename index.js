@@ -6,29 +6,42 @@ const { RNTWechat } = NativeModules
 const eventEmitter = new NativeEventEmitter(RNTWechat)
 
 let resolveAuth
+let rejectAuth
 let resolveMessage
+let rejectMessage
 
 eventEmitter.addListener('auth_response', function (data) {
-  console.log('auth response', data)
-  if (resolveAuth) {
-    resolveAuth(data)
-    resolveAuth = null
+  if (data.err_code === 0) {
+    if (resolveAuth) {
+      resolveAuth(data)
+      resolveAuth = rejectAuth = null
+    }
+  }
+  else if (rejectAuth) {
+    rejectAuth(data)
+    resolveAuth = rejectAuth = null
   }
 })
 
 eventEmitter.addListener('message_response', function (data) {
-  console.log('share response', data)
-  if (resolveMessage) {
-    resolveMessage(data)
-    resolveMessage = null
+  if (data.err_code === 0) {
+    if (resolveMessage) {
+      resolveMessage(data)
+      resolveMessage = rejectMessage = null
+    }
+  }
+  else if (rejectMessage) {
+    rejectMessage(data)
+    resolveMessage = rejectMessage = null
   }
 })
 
 function shareMessage(promise) {
   return promise.then(data => {
     if (data.success) {
-      return new Promise(resolve => {
+      return new Promise((resolve, reject) => {
         resolveMessage = resolve
+        rejectMessage = reject
       })
     }
     return data
@@ -43,11 +56,11 @@ export const SCENE_TIMELINE = 1
 export const SCENE_FAVORITE = 0
 
 // 小程序类型 - 正式版
-export const MINI_PROGRAM_RELEASE = 0
+export const MP_TYPE_PROD = 0
 // 小程序类型 - 测试版
-export const MINI_PROGRAM_TEST = 1
+export const MP_TYPE_TEST = 1
 // 小程序类型 - 预览版
-export const MINI_PROGRAM_PREVIEW = 2
+export const MP_TYPE_PREVIEW = 2
 
 export default {
 
@@ -79,8 +92,9 @@ export default {
     return RNTWechat.sendAuthRequest(options)
       .then(data => {
         if (data.success) {
-          return new Promise(resolve => {
+          return new Promise((resolve, reject) => {
             resolveAuth = resolve
+            rejectAuth = reject
           })
         }
         return data

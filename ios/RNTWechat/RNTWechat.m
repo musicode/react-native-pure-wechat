@@ -95,13 +95,11 @@ options:(NSDictionary<NSString*, id> *)options {
     // 微信登录
     if ([resp isKindOfClass:[SendAuthResp class]]) {
         
-        SendAuthResp *r = (SendAuthResp *)resp;
-        
-        body[@"lang"] = r.lang;
-        body[@"country"] = r.country;
-        body[@"state"] = r.state;
-        
         if (resp.errCode == WXSuccess) {
+            SendAuthResp *r = (SendAuthResp *)resp;
+            body[@"lang"] = r.lang;
+            body[@"country"] = r.country;
+            body[@"state"] = r.state;
             body[@"code"] = r.code;
         }
         
@@ -110,12 +108,13 @@ options:(NSDictionary<NSString*, id> *)options {
     }
     // 微信分享
     else if ([resp isKindOfClass:[SendMessageToWXResp class]]) {
-        
-        SendMessageToWXResp *r = (SendMessageToWXResp *)resp;
-    
-        body[@"lang"] = r.lang;
-        body[@"country"] = r.country;
-        
+
+        if (resp.errCode == WXSuccess) {
+            SendMessageToWXResp *r = (SendMessageToWXResp *)resp;
+            body[@"lang"] = r.lang;
+            body[@"country"] = r.country;
+        }
+
         [[NSNotificationCenter defaultCenter] postNotificationName:wechatMessageResponse object:body];
 
     }
@@ -215,14 +214,7 @@ RCT_EXPORT_METHOD(shareImage:(NSDictionary*)options
     
     NSString *url = [RCTConvert NSString:options[@"image_url"]];
     
-    // 本地图片
-    if ([url hasPrefix:@"/"]) {
-        sendShareReq([UIImage imageWithContentsOfFile:url]);
-    }
-    // 网络图片
-    else {
-        wechatLoadImage(url, sendShareReq);
-    }
+    wechatLoadImage(url, sendShareReq);
     
 }
 
@@ -266,14 +258,7 @@ RCT_EXPORT_METHOD(shareAudio:(NSDictionary*)options
     
     NSString *url = [RCTConvert NSString:options[@"thumbnail_url"]];
     
-    // 本地图片
-    if ([url hasPrefix:@"/"]) {
-        sendShareReq([UIImage imageWithContentsOfFile:url]);
-    }
-    // 网络图片
-    else {
-        wechatLoadImage(url, sendShareReq);
-    }
+    wechatLoadImage(url, sendShareReq);
     
 }
 
@@ -315,14 +300,7 @@ RCT_EXPORT_METHOD(shareVideo:(NSDictionary*)options
     
     NSString *url = [RCTConvert NSString:options[@"thumbnail_url"]];
     
-    // 本地图片
-    if ([url hasPrefix:@"/"]) {
-        sendShareReq([UIImage imageWithContentsOfFile:url]);
-    }
-    // 网络图片
-    else {
-        wechatLoadImage(url, sendShareReq);
-    }
+    wechatLoadImage(url, sendShareReq);
     
 }
 
@@ -363,14 +341,7 @@ RCT_EXPORT_METHOD(sharePage:(NSDictionary*)options
     
     NSString *url = [RCTConvert NSString:options[@"thumbnail_url"]];
     
-    // 本地图片
-    if ([url hasPrefix:@"/"]) {
-        sendShareReq([UIImage imageWithContentsOfFile:url]);
-    }
-    // 网络图片
-    else {
-        wechatLoadImage(url, sendShareReq);
-    }
+    wechatLoadImage(url, sendShareReq);
     
 }
 
@@ -391,16 +362,16 @@ RCT_EXPORT_METHOD(shareMiniProgram:(NSDictionary*)options
         // 兼容低版本的网页链接
         object.webpageUrl = [RCTConvert NSString:options[@"page_url"]];
         // 小程序的 userName
-        object.userName = [RCTConvert NSString:options[@"user_name"]];
+        object.userName = [RCTConvert NSString:options[@"mp_name"]];
         // 小程序的页面路径
-        object.path = [RCTConvert NSString:options[@"path"]];
+        object.path = [RCTConvert NSString:options[@"mp_path"]];
         // 小程序新版本的预览图二进制数据，6.5.9及以上版本微信客户端支持
         object.hdImageData = imageData;
         // 是否使用带 shareTicket 的分享
         object.withShareTicket = [RCTConvert BOOL:options[@"with_share_ticket"]];
         // 小程序的类型，默认正式版，1.8.1及以上版本开发者工具包支持分享开发版和体验版小程序
         // 0-正式版 1-开发版 2-体验版
-        object.miniProgramType = [RCTConvert int:options[@"type"]];
+        object.miniProgramType = [RCTConvert int:options[@"mp_type"]];
         
         WXMediaMessage *message = [WXMediaMessage message];
         message.title = [RCTConvert NSString:options[@"title"]];
@@ -426,14 +397,7 @@ RCT_EXPORT_METHOD(shareMiniProgram:(NSDictionary*)options
     
     NSString *url = [RCTConvert NSString:options[@"thumbnail_url"]];
     
-    // 本地图片
-    if ([url hasPrefix:@"/"]) {
-        sendShareReq([UIImage imageWithContentsOfFile:url]);
-    }
-    // 网络图片
-    else {
-        wechatLoadImage(url, sendShareReq);
-    }
+    wechatLoadImage(url, sendShareReq);
     
 }
 

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
-import android.graphics.BitmapFactory
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.tencent.mm.opensdk.constants.Build
@@ -30,9 +29,9 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         private val wechatModules = arrayListOf<RNTWechatModule>()
 
-        private var wechatLoadImage: ((String, (String) -> Unit) -> Unit)? = null
+        private var wechatLoadImage: ((String, (Bitmap?) -> Unit) -> Unit)? = null
 
-        fun init(app: Application, appId: String, loadImage: (String, (String) -> Unit) -> Unit) {
+        fun init(app: Application, appId: String, loadImage: (String, (Bitmap?) -> Unit) -> Unit) {
 
             wechatLoadImage = loadImage
 
@@ -108,7 +107,10 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         val req = SendAuth.Req()
         req.scope = options.getString("scope")
-        req.state = options.getString("state")
+
+        if (options.hasKey("state")) {
+            req.state = options.getString("state")
+        }
 
         val map = Arguments.createMap()
         map.putBoolean("success", api.sendReq(req))
@@ -146,20 +148,10 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
     @ReactMethod
     fun shareImage(options: ReadableMap, promise: Promise) {
 
-        fun sendShareReq(url: String) {
+        fun sendShareReq(bitmap: Bitmap?) {
 
-            if (url.isEmpty()) {
+            if (bitmap == null) {
                 promise.reject("1", "image is not found.")
-                return
-            }
-
-            val bitmap: Bitmap
-            try {
-                bitmap = BitmapFactory.decodeFile(url)
-            }
-            catch (ex: Throwable) {
-                ex.printStackTrace()
-                promise.reject("2", "decode image file failed.")
                 return
             }
 
@@ -187,15 +179,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         val url = options.getString("image_url")!!
 
-        // 本地图片
-        if (url.startsWith("/")) {
-            sendShareReq(url)
-        }
-        // 网络图片
-        else {
-            wechatLoadImage?.invoke(url) {
-                sendShareReq(it)
-            }
+        wechatLoadImage?.invoke(url) {
+            sendShareReq(it)
         }
 
     }
@@ -203,20 +188,10 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
     @ReactMethod
     fun shareAudio(options: ReadableMap, promise: Promise) {
 
-        fun sendShareReq(url: String) {
+        fun sendShareReq(bitmap: Bitmap?) {
 
-            if (url.isEmpty()) {
+            if (bitmap == null) {
                 promise.reject("1", "thumbnail is not found.")
-                return
-            }
-
-            val bitmap: Bitmap
-            try {
-                bitmap = BitmapFactory.decodeFile(url)
-            }
-            catch (ex: Throwable) {
-                ex.printStackTrace()
-                promise.reject("2", "decode thumbnail file failed.")
                 return
             }
 
@@ -250,15 +225,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         val url = options.getString("thumbnail_url")!!
 
-        // 本地图片
-        if (url.startsWith("/")) {
-            sendShareReq(url)
-        }
-        // 网络图片
-        else {
-            wechatLoadImage?.invoke(url) {
-                sendShareReq(it)
-            }
+        wechatLoadImage?.invoke(url) {
+            sendShareReq(it)
         }
 
     }
@@ -266,20 +234,10 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
     @ReactMethod
     fun shareVideo(options: ReadableMap, promise: Promise) {
 
-        fun sendShareReq(url: String) {
+        fun sendShareReq(bitmap: Bitmap?) {
 
-            if (url.isEmpty()) {
+            if (bitmap == null) {
                 promise.reject("1", "thumbnail is not found.")
-                return
-            }
-
-            val bitmap: Bitmap
-            try {
-                bitmap = BitmapFactory.decodeFile(url)
-            }
-            catch (ex: Throwable) {
-                ex.printStackTrace()
-                promise.reject("2", "decode thumbnail file failed.")
                 return
             }
 
@@ -311,15 +269,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         val url = options.getString("thumbnail_url")!!
 
-        // 本地图片
-        if (url.startsWith("/")) {
-            sendShareReq(url)
-        }
-        // 网络图片
-        else {
-            wechatLoadImage?.invoke(url) {
-                sendShareReq(it)
-            }
+        wechatLoadImage?.invoke(url) {
+            sendShareReq(it)
         }
 
     }
@@ -327,20 +278,10 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
     @ReactMethod
     fun sharePage(options: ReadableMap, promise: Promise) {
 
-        fun sendShareReq(url: String) {
+        fun sendShareReq(bitmap: Bitmap?) {
 
-            if (url.isEmpty()) {
+            if (bitmap == null) {
                 promise.reject("1", "thumbnail is not found.")
-                return
-            }
-
-            val bitmap: Bitmap
-            try {
-                bitmap = BitmapFactory.decodeFile(url)
-            }
-            catch (ex: Throwable) {
-                ex.printStackTrace()
-                promise.reject("2", "decode thumbnail file failed.")
                 return
             }
 
@@ -371,15 +312,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         val url = options.getString("thumbnail_url")!!
 
-        // 本地图片
-        if (url.startsWith("/")) {
-            sendShareReq(url)
-        }
-        // 网络图片
-        else {
-            wechatLoadImage?.invoke(url) {
-                sendShareReq(it)
-            }
+        wechatLoadImage?.invoke(url) {
+            sendShareReq(it)
         }
 
     }
@@ -387,29 +321,19 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
     @ReactMethod
     fun shareMiniProgram(options: ReadableMap, promise: Promise) {
 
-        fun sendShareReq(url: String) {
+        fun sendShareReq(bitmap: Bitmap?) {
 
-            if (url.isEmpty()) {
+            if (bitmap == null) {
                 promise.reject("1", "thumbnail is not found.")
-                return
-            }
-
-            val bitmap: Bitmap
-            try {
-                bitmap = BitmapFactory.decodeFile(url)
-            }
-            catch (ex: Throwable) {
-                ex.printStackTrace()
-                promise.reject("2", "decode thumbnail file failed.")
                 return
             }
 
             val obj = WXMiniProgramObject()
             obj.webpageUrl = options.getString("page_url")
-            obj.userName = options.getString("user_name")
-            obj.path = options.getString("path")
+            obj.userName = options.getString("mp_name")
+            obj.path = options.getString("mp_path")
             obj.withShareTicket = options.getBoolean("with_share_ticket")
-            obj.miniprogramType = options.getInt("type")
+            obj.miniprogramType = options.getInt("mp_type")
 
             val msg = WXMediaMessage(obj)
             msg.title = options.getString("title")
@@ -436,15 +360,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         val url = options.getString("thumbnail_url")!!
 
-        // 本地图片
-        if (url.startsWith("/")) {
-            sendShareReq(url)
-        }
-        // 网络图片
-        else {
-            wechatLoadImage?.invoke(url) {
-                sendShareReq(it)
-            }
+        wechatLoadImage?.invoke(url) {
+            sendShareReq(it)
         }
 
     }
@@ -462,17 +379,17 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
         val map = Arguments.createMap()
         map.putInt("err_code", baseResp.errCode)
         map.putString("err_str", baseResp.errStr)
-        map.putString("open_id", baseResp.openId)
-        map.putString("transaction", baseResp.transaction)
 
         when (baseResp) {
             is SendAuth.Resp -> {
                 val resp = baseResp as SendAuth.Resp
-                map.putString("code", resp.code)
-                map.putString("state", resp.state)
-                map.putString("url", resp.url)
-                map.putString("lang", resp.lang)
-                map.putString("country", resp.country)
+                if (resp.errCode == BaseResp.ErrCode.ERR_OK) {
+                    map.putString("code", resp.code)
+                    map.putString("state", resp.state)
+                    map.putString("url", resp.url)
+                    map.putString("lang", resp.lang)
+                    map.putString("country", resp.country)
+                }
                 sendEvent("auth_response", map)
             }
             is SendMessageToWX.Resp -> {

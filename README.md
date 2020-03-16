@@ -23,13 +23,46 @@ react-native link react-native-pure-wechat
 
 在 [微信开放平台](https://open.weixin.qq.com/) 获取 `appId`，并配置 `universalLink`。
 
-在 `Xcode` 中，选择你的工程设置项，选中 `TARGETS` 一栏，在 `Info` 标签栏的`URL Types` 添加 `URL Scheme` 为你所注册的 `appId`。
+在 `Xcode` 中，选择你的工程设置项，选中 `TARGETS` 一栏，在 `Info` 标签栏的 `URL Types` 添加 `URL Scheme` 为你所注册的 `appId`。
 
 ![](https://res.wx.qq.com/op_res/ohBULcCbr3PPan9SwnrNM6fEr-4kGDn98NenybClk1-fZE2rRYqU6xJCyVIMoFo9)
 
-在 `Xcode` 中，选择你的工程设置项，选中 `TARGETS` 一栏，在 `Info` 标签栏的`LSApplicationQueriesSchemes` 添加 `weixin` 和 `weixinULAPI`。
+在 `Xcode` 中，选择你的工程设置项，选中 `TARGETS` 一栏，在 `Info` 标签栏的 `LSApplicationQueriesSchemes` 添加 `weixin` 和 `weixinULAPI`。
 
 ![](https://res.wx.qq.com/op_res/jck8iqKH85F0BaUWOT3GsSNmuGiOajiC-0bUWehibxED9c4JCauEun6UAZFh3HdO)
+
+接下来，配置 `universalLink`，这有点麻烦。
+
+首先在苹果开发者帐号里获取 `Team ID`，然后根据你在 `微信开放平台` 配置的 `universalLink` 生成一份 `json`，格式如下：
+
+```json
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID":"<team id>.<domain name>",
+        "paths": ["*"]
+      }
+    ]
+  }
+}
+```
+
+举个例子，如果你的 `Team ID` 是 `N123`，`universalLink` 是 `https://www.abc.com`（确保是 `https`），那么 `appID` 应该是 `N123.www.abc.com`。
+
+准备好 `json` 之后，确保通过 `https://www.abc.com/apple-app-site-association` 能打开这份 `json`。
+
+到此服务器的配置完成，接下来配置 `Xcode`，首先打开苹果 `Certificates, Identifiers & Profiles`，选中 `Identifiers` 菜单，再选中你要使用的 `Identifier`，确保它勾选了 `Associated Domains` 项，如下：
+
+![image](https://user-images.githubusercontent.com/2732303/76764453-d3f28900-67cf-11ea-8c4e-ac704fe41191.png)
+
+然后回到主菜单，选中 `Profiles` 菜单，确保你要使用的 `Profile` 包含了 `Associated Domains`，如果当前还未包含，则点击编辑，保存，然后重新下载一个，并导入 `Xcode`。
+
+在 `Xcode` 中，选择你的工程设置项，选中 `TARGETS` 一栏，在 `Signing & Capabilities` 标签栏点击 `+ Capability`，添加 `Associated Domains`，并填入你的 `universalLink`，格式是 `applinks:<domain name>`，注意域名不要包含 `https`，如下：
+
+![image](https://user-images.githubusercontent.com/2732303/76765267-19638600-67d1-11ea-955e-ef637e108b50.png)
+
 
 最后，修改 `AppDelegate.m`：
 

@@ -63,6 +63,9 @@ const App: () => React$Node = () => {
               }).then(data => {
                 console.log('sendAuthRequest', data)
               })
+              .catch(data => {
+                console.log('sendAuthRequest failed', data)
+              })
             }}
           />
           <Button
@@ -102,7 +105,7 @@ const App: () => React$Node = () => {
             title="shareImage session"
             onPress={() => {
               Wechat.shareImage({
-                image_url: 'https://xxx',
+                image_url: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=38447785,1942646210&fm=26&gp=0.jpg',
                 scene: SCENE_SESSION,
               }).then(data => {
                 console.log('shareImage', data)
@@ -110,24 +113,16 @@ const App: () => React$Node = () => {
             }}
           />
           <Button
-            title="shareImage timeline"
+            title="sharePage session"
             onPress={() => {
-              Wechat.shareImage({
-                image_url: 'https://xxx',
-                scene: SCENE_TIMELINE,
+              Wechat.sharePage({
+                page_url: 'https://www.baidu.com',
+                thumbnail_url: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=38447785,1942646210&fm=26&gp=0.jpg',
+                title: '百度',
+                description: '哈哈哈哈',
+                scene: SCENE_SESSION,
               }).then(data => {
-                console.log('shareImage', data)
-              })
-            }}
-          />
-          <Button
-            title="shareImage favorite"
-            onPress={() => {
-              Wechat.shareImage({
-                image_url: 'https://xxx',
-                scene: SCENE_FAVORITE,
-              }).then(data => {
-                console.log('shareImage', data)
+                console.log('sharePage', data)
               })
             }}
           />

@@ -196,7 +196,8 @@ RCT_EXPORT_METHOD(shareImage:(NSDictionary*)options
         object.imageData = imageData;
         
         WXMediaMessage *message = [WXMediaMessage message];
-        message.thumbData = imageData;
+        // 分享图片不需要缩略图，最重要的是分享的图片通常比较大，会超过 32KB 限制
+        // message.thumbData = imageData;
         message.mediaObject = object;
         
         SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];

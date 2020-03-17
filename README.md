@@ -73,7 +73,7 @@ react-native link react-native-pure-wechat
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   ...
-  // 初始化
+  // 初始化，注意 universalLink 包含 https://
   [RNTWechat init:@"" universalLink:@"" loadImage:^(NSString *url, void (^ onComplete)(UIImage *)) {
 
     // 加载网络图片

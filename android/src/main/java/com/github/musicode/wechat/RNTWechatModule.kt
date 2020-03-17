@@ -27,7 +27,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         private lateinit var api: IWXAPI
 
-        private val wechatModules = arrayListOf<RNTWechatModule>()
+        private var wechatModule: RNTWechatModule? = null
 
         private var wechatLoadImage: ((String, (Bitmap?) -> Unit) -> Unit)? = null
 
@@ -51,8 +51,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
         }
 
         fun handleIntent(intent: Intent) {
-            for (module in wechatModules) {
-                api.handleIntent(intent, module)
+            wechatModule?.let {
+                api.handleIntent(intent, it)
             }
         }
 
@@ -64,12 +64,12 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
     override fun onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy()
-        wechatModules.remove(this)
+        wechatModule = null
     }
 
     override fun initialize() {
         super.initialize()
-        wechatModules.add(this)
+        wechatModule = this
     }
 
     @ReactMethod
@@ -158,7 +158,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             val obj = WXImageObject(bitmap)
 
             val msg = WXMediaMessage(obj)
-            msg.thumbData = null
+            // 分享图片不需要缩略图，最重要的是分享的图片通常比较大，会超过 32KB 限制
 
             val req = SendMessageToWX.Req()
             req.transaction = createUUID()

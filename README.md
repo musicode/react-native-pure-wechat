@@ -171,7 +171,7 @@ wechat.sendAuthRequest({
   scope: 'snsapi_userinfo'
 })
 .then(response => {
-  response.code
+  response.data.code
 })
 .catch(() => {
   // 登录失败

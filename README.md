@@ -33,7 +33,7 @@ react-native link react-native-pure-wechat
 
 接下来，配置 `universalLink`，这有点麻烦。
 
-首先在苹果开发者帐号里获取 `Team ID`，然后根据你在 `微信开放平台` 配置的 `universalLink` 生成一份 `json`，格式如下：
+首先在苹果开发者帐号里获取 `Team ID`，然后生成一份如下格式的 `json`：
 
 ```json
 {
@@ -41,7 +41,7 @@ react-native link react-native-pure-wechat
     "apps": [],
     "details": [
       {
-        "appID":"<team id>.<domain name>",
+        "appID":"<team id>.<bundle id>",
         "paths": ["*"]
       }
     ]
@@ -49,7 +49,7 @@ react-native link react-native-pure-wechat
 }
 ```
 
-举个例子，如果你的 `Team ID` 是 `N123`，`universalLink` 是 `https://www.abc.com`（确保是 `https`），那么 `appID` 应该是 `N123.www.abc.com`。
+举个例子，如果你的 `Team ID` 是 `N123`，`Bundle ID` 是 `com.abd.prod`，那么 `appID` 应该是 `N123.com.abd.prod`。
 
 准备好 `json` 之后，确保通过 `https://www.abc.com/apple-app-site-association` 能打开这份 `json`。
 

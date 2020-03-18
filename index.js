@@ -11,7 +11,7 @@ let resolveMessage
 let rejectMessage
 
 eventEmitter.addListener('auth_response', function (data) {
-  if (data.err_code === 0) {
+  if (data.code === 0) {
     if (resolveAuth) {
       resolveAuth(data)
       resolveAuth = rejectAuth = null
@@ -24,7 +24,7 @@ eventEmitter.addListener('auth_response', function (data) {
 })
 
 eventEmitter.addListener('message_response', function (data) {
-  if (data.err_code === 0) {
+  if (data.code === 0) {
     if (resolveMessage) {
       resolveMessage(data)
       resolveMessage = rejectMessage = null

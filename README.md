@@ -192,18 +192,18 @@ wechat.shareText({
 
 // 分享图片
 wechat.shareImage({
-  image_url: 'https://xxx',
+  imageUrl: 'https://xxx',
   scene: SCENE_SESSION,
 })
 
 // 分享音频
 wechat.shareAudio({
   // 音频网页地址
-  page_url: 'https://xxx',
+  pageUrl: 'https://xxx',
   // 音频地址
-  audio_url: 'https://xxx',
+  audioUrl: 'https://xxx',
   // 缩略图地址
-  thumbnail_url: 'https://xxx',
+  thumbnailUrl: 'https://xxx',
   title: '',
   description: '',
   scene: SCENE_SESSION,
@@ -212,9 +212,9 @@ wechat.shareAudio({
 // 分享视频
 wechat.shareVideo({
   // 视频地址
-  video_url: 'https://xxx',
+  videoUrl: 'https://xxx',
   // 缩略图地址
-  thumbnail_url: 'https://xxx',
+  thumbnailUrl: 'https://xxx',
   title: '',
   description: '',
   scene: SCENE_SESSION,
@@ -223,9 +223,9 @@ wechat.shareVideo({
 // 分享网页
 wechat.sharePage({
   // 网页地址
-  page_url: 'https://xxx',
+  pageUrl: 'https://xxx',
   // 缩略图地址
-  thumbnail_url: 'https://xxx',
+  thumbnailUrl: 'https://xxx',
   title: '',
   description: '',
   scene: SCENE_SESSION,
@@ -234,18 +234,18 @@ wechat.sharePage({
 // 分享小程序
 wechat.sharePage({
   // 兼容低版本的网页链接
-  page_url: 'https://xxx',
+  pageUrl: 'https://xxx',
   // 缩略图地址
-  thumbnail_url: 'https://xxx',
+  thumbnailUrl: 'https://xxx',
   // 小程序的 userName
   // 获取方式：登录小程序管理后台-设置-基本设置-帐号信息
-  mp_name: '',
+  mpName: '',
   // 小程序的页面路径
-  mp_path: '',
-  // 是否使用带 shareTicket 的分享
-  with_share_ticket: true,
+  mpPath: '',
   // 小程序的类型
-  mp_type: MP_TYPE_PROD,
+  mpType: MP_TYPE_PROD,
+  // 是否使用带 shareTicket 的分享
+  withShareTicket: true,
   title: '',
   description: '',
   scene: SCENE_SESSION,

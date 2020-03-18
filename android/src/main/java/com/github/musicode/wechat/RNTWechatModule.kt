@@ -134,8 +134,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
         req.scene = options.getInt("scene")
 
         // 这个参数貌似是新版 SDK 加的，以前用的版本没传过这个参数
-        if (options.hasKey("open_id")) {
-            req.userOpenId = options.getString("open_id")
+        if (options.hasKey("openId")) {
+            req.userOpenId = options.getString("openId")
         }
 
         val map = Arguments.createMap()
@@ -166,8 +166,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             req.scene = options.getInt("scene")
 
             // 这个参数貌似是新版 SDK 加的，以前用的版本没传过这个参数
-            if (options.hasKey("open_id")) {
-                req.userOpenId = options.getString("open_id")
+            if (options.hasKey("openId")) {
+                req.userOpenId = options.getString("openId")
             }
 
             val map = Arguments.createMap()
@@ -177,7 +177,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         }
 
-        val url = options.getString("image_url")!!
+        val url = options.getString("imageUrl")!!
 
         wechatLoadImage?.invoke(url) {
             sendShareReq(it)
@@ -196,9 +196,9 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             }
 
             val obj = WXMusicObject()
-            obj.musicUrl = options.getString("page_url")
+            obj.musicUrl = options.getString("pageUrl")
             obj.musicLowBandUrl = obj.musicUrl
-            obj.musicDataUrl = options.getString("audio_url")
+            obj.musicDataUrl = options.getString("audioUrl")
             obj.musicLowBandDataUrl = obj.musicDataUrl
 
             val msg = WXMediaMessage(obj)
@@ -212,8 +212,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             req.scene = options.getInt("scene")
 
             // 这个参数貌似是新版 SDK 加的，以前用的版本没传过这个参数
-            if (options.hasKey("open_id")) {
-                req.userOpenId = options.getString("open_id")
+            if (options.hasKey("openId")) {
+                req.userOpenId = options.getString("openId")
             }
 
             val map = Arguments.createMap()
@@ -223,7 +223,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         }
 
-        val url = options.getString("thumbnail_url")!!
+        val url = options.getString("thumbnailUrl")!!
 
         wechatLoadImage?.invoke(url) {
             sendShareReq(it)
@@ -242,7 +242,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             }
 
             val obj = WXVideoObject()
-            obj.videoUrl = options.getString("video_url")
+            obj.videoUrl = options.getString("videoUrl")
             obj.videoLowBandUrl = obj.videoUrl
 
             val msg = WXMediaMessage(obj)
@@ -256,8 +256,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             req.scene = options.getInt("scene")
 
             // 这个参数貌似是新版 SDK 加的，以前用的版本没传过这个参数
-            if (options.hasKey("open_id")) {
-                req.userOpenId = options.getString("open_id")
+            if (options.hasKey("openId")) {
+                req.userOpenId = options.getString("openId")
             }
 
             val map = Arguments.createMap()
@@ -267,7 +267,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         }
 
-        val url = options.getString("thumbnail_url")!!
+        val url = options.getString("thumbnailUrl")!!
 
         wechatLoadImage?.invoke(url) {
             sendShareReq(it)
@@ -286,7 +286,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             }
 
             val obj = WXWebpageObject()
-            obj.webpageUrl = options.getString("page_url")
+            obj.webpageUrl = options.getString("pageUrl")
 
             val msg = WXMediaMessage(obj)
             msg.title = options.getString("title")
@@ -299,8 +299,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             req.scene = options.getInt("scene")
 
             // 这个参数貌似是新版 SDK 加的，以前用的版本没传过这个参数
-            if (options.hasKey("open_id")) {
-                req.userOpenId = options.getString("open_id")
+            if (options.hasKey("openId")) {
+                req.userOpenId = options.getString("openId")
             }
 
             val map = Arguments.createMap()
@@ -310,7 +310,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         }
 
-        val url = options.getString("thumbnail_url")!!
+        val url = options.getString("thumbnailUrl")!!
 
         wechatLoadImage?.invoke(url) {
             sendShareReq(it)
@@ -329,11 +329,11 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             }
 
             val obj = WXMiniProgramObject()
-            obj.webpageUrl = options.getString("page_url")
-            obj.userName = options.getString("mp_name")
-            obj.path = options.getString("mp_path")
-            obj.withShareTicket = options.getBoolean("with_share_ticket")
-            obj.miniprogramType = options.getInt("mp_type")
+            obj.webpageUrl = options.getString("pageUrl")
+            obj.userName = options.getString("mpName")
+            obj.path = options.getString("mpPath")
+            obj.miniprogramType = options.getInt("mpType")
+            obj.withShareTicket = options.getBoolean("withShareTicket")
 
             val msg = WXMediaMessage(obj)
             msg.title = options.getString("title")
@@ -347,8 +347,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             req.scene = SendMessageToWX.Req.WXSceneSession
 
             // 这个参数貌似是新版 SDK 加的，以前用的版本没传过这个参数
-            if (options.hasKey("open_id")) {
-                req.userOpenId = options.getString("open_id")
+            if (options.hasKey("openId")) {
+                req.userOpenId = options.getString("openId")
             }
 
             val map = Arguments.createMap()
@@ -358,7 +358,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         }
 
-        val url = options.getString("thumbnail_url")!!
+        val url = options.getString("thumbnailUrl")!!
 
         wechatLoadImage?.invoke(url) {
             sendShareReq(it)
@@ -377,18 +377,26 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
         }
 
         val map = Arguments.createMap()
-        map.putInt("err_code", baseResp.errCode)
-        map.putString("err_str", baseResp.errStr)
+
+        var code = 0
+        if (baseResp.errCode != BaseResp.ErrCode.ERR_OK) {
+          code = baseResp.errCode
+        }
+
+        map.putInt("code", code)
+        map.putString("msg", baseResp.errStr)
 
         when (baseResp) {
             is SendAuth.Resp -> {
-                val resp = baseResp as SendAuth.Resp
-                if (resp.errCode == BaseResp.ErrCode.ERR_OK) {
-                    map.putString("code", resp.code)
-                    map.putString("state", resp.state)
-                    map.putString("url", resp.url)
-                    map.putString("lang", resp.lang)
-                    map.putString("country", resp.country)
+                if (code == 0) {
+                    val resp = baseResp as SendAuth.Resp
+                    val data = Arguments.createMap()
+                    data.putString("code", resp.code)
+                    data.putString("state", resp.state)
+                    data.putString("url", resp.url)
+                    data.putString("lang", resp.lang)
+                    data.putString("country", resp.country)
+                    map.putMap("data", data)
                 }
                 sendEvent("auth_response", map)
             }

@@ -7,7 +7,9 @@
 SDK 版本：
 
 * ios: 1.8.6
-* android: 最新版（写文档此刻是 5.5.8）
+* android: 5.5.8
+
+> 每次安装应该都会拉取微信仓库的最新版
 
 ## Installation
 
@@ -232,7 +234,7 @@ wechat.sharePage({
 })
 
 // 分享小程序
-wechat.sharePage({
+wechat.shareMiniProgram({
   // 兼容低版本的网页链接
   pageUrl: 'https://xxx',
   // 缩略图地址

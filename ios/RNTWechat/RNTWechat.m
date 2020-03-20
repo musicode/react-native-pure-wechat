@@ -1,14 +1,9 @@
 
 #import <UIKit/UIKit.h>
-#import <React/RCTLog.h>
 #import <React/RCTConvert.h>
-#import <React/RCTLinkingManager.h>
 #import "RNTWechat.h"
 
 RNTWechat *wechatInstance;
-
-NSString *wechatAuthResponse = @"wechatAuthResponse";
-NSString *wechatMessageResponse = @"wechatMessageResponse";
 
 typeof(void (^)(NSString*, void (^)(UIImage*))) wechatLoadImage;
 
@@ -41,19 +36,7 @@ options:(NSDictionary<NSString*, id> *)options {
 }
 
 - (instancetype)init {
-    if (self = [super init]) {
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                            selector:@selector(handleAuthResponse:)
-                                            name:wechatAuthResponse
-                                            object:nil];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                            selector:@selector(handleMessageResponse:)
-                                            name:wechatMessageResponse
-                                            object:nil];
-
-    }
+    self = [super init];
     wechatInstance = self;
     return self;
 }
@@ -68,14 +51,6 @@ options:(NSDictionary<NSString*, id> *)options {
       @"auth_response",
       @"message_response",
   ];
-}
-
-- (void)handleAuthResponse:(NSNotification *)notification {
-    [self sendEventWithName:@"auth_response" body:notification.object];
-}
-
-- (void)handleMessageResponse:(NSNotification *)notification {
-    [self sendEventWithName:@"message_response" body:notification.object];
 }
 
 - (void) onReq:(BaseReq *)req {
@@ -112,7 +87,7 @@ options:(NSDictionary<NSString*, id> *)options {
             body[@"data"] = data;
         }
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:wechatAuthResponse object:body];
+        [self sendEventWithName:@"message_response" body:body];
 
     }
     // 微信分享
@@ -126,7 +101,7 @@ options:(NSDictionary<NSString*, id> *)options {
             body[@"data"] = data;
         }
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:wechatMessageResponse object:body];
+        [self sendEventWithName:@"auth_response" body:body];
 
     }
 }

@@ -36,13 +36,16 @@ options:(NSDictionary<NSString*, id> *)options {
 }
 
 - (instancetype)init {
-    self = [super init];
-    wechatInstance = self;
+    if (self = [super init]) {
+        if (wechatInstance) {
+            wechatInstance = nil;
+        }
+        wechatInstance = self;
+    }
     return self;
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     wechatInstance = nil;
 }
 

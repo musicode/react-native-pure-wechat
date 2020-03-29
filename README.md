@@ -120,7 +120,7 @@ class WXEntryActivity : Activity() {
 }
 ```
 
-在 `manifest` 文件里面加上 `exported`、`taskAffinity` 及 `launchMode` 属性，其中 `exported` 设置为 `true`， `taskAffinity` 设置为你的包名，`launchMode` 设置为 `singleTask`：
+在 `manifest` 文件里面加上 `exported` 和 `launchMode` 属性，其中 `exported` 设置为 `true`， `launchMode` 设置为 `singleTask`：
 
 ```xml
 <activity
@@ -128,7 +128,6 @@ class WXEntryActivity : Activity() {
     android:label="@string/app_name"
     android:theme="@android:style/Theme.Translucent.NoTitleBar"
     android:exported="true"
-    android:taskAffinity="填写你的包名"
     android:launchMode="singleTask"
 />
 ```

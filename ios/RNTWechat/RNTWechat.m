@@ -56,11 +56,11 @@ options:(NSDictionary<NSString*, id> *)options {
   ];
 }
 
-- (void) onReq:(BaseReq *)req {
+- (void)onReq:(BaseReq *)req {
 
 }
 
-- (void) onResp:(BaseResp *)resp {
+- (void)onResp:(BaseResp *)resp {
 
     if (resp == nil) {
         return;
@@ -90,7 +90,7 @@ options:(NSDictionary<NSString*, id> *)options {
             body[@"data"] = data;
         }
 
-        [self sendEventWithName:@"message_response" body:body];
+        [self sendEventWithName:@"auth_response" body:body];
 
     }
     // 微信分享
@@ -104,7 +104,7 @@ options:(NSDictionary<NSString*, id> *)options {
             body[@"data"] = data;
         }
 
-        [self sendEventWithName:@"auth_response" body:body];
+        [self sendEventWithName:@"message_response" body:body];
 
     }
 }

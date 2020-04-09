@@ -155,6 +155,11 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
                 return
             }
 
+            if (bitmap.isRecycled) {
+                promise.reject("2", "image bitmap is recycled.")
+                return
+            }
+
             val obj = WXImageObject(bitmap)
 
             val msg = WXMediaMessage(obj)
@@ -192,6 +197,11 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
             if (bitmap == null) {
                 promise.reject("1", "thumbnail is not found.")
+                return
+            }
+
+            if (bitmap.isRecycled) {
+                promise.reject("2", "thumbnail bitmap is recycled.")
                 return
             }
 
@@ -241,6 +251,11 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
                 return
             }
 
+            if (bitmap.isRecycled) {
+                promise.reject("2", "thumbnail bitmap is recycled.")
+                return
+            }
+
             val obj = WXVideoObject()
             obj.videoUrl = options.getString("videoUrl")
             obj.videoLowBandUrl = obj.videoUrl
@@ -285,6 +300,11 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
                 return
             }
 
+            if (bitmap.isRecycled) {
+                promise.reject("2", "thumbnail bitmap is recycled.")
+                return
+            }
+
             val obj = WXWebpageObject()
             obj.webpageUrl = options.getString("pageUrl")
 
@@ -325,6 +345,11 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
             if (bitmap == null) {
                 promise.reject("1", "thumbnail is not found.")
+                return
+            }
+
+            if (bitmap.isRecycled) {
+                promise.reject("2", "thumbnail bitmap is recycled.")
                 return
             }
 
@@ -389,7 +414,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
         when (baseResp) {
             is SendAuth.Resp -> {
                 if (code == 0) {
-                    val resp = baseResp as SendAuth.Resp
+                    val resp = baseResp
                     val data = Arguments.createMap()
                     data.putString("code", resp.code)
                     data.putString("state", resp.state)

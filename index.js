@@ -7,6 +7,8 @@ const eventEmitter = new NativeEventEmitter(RNTWechat)
 
 let resolveAuth
 let rejectAuth
+let resolvePay
+let rejectPay
 let resolveMessage
 let rejectMessage
 
@@ -14,12 +16,25 @@ eventEmitter.addListener('auth_response', function (data) {
   if (data.code === 0) {
     if (resolveAuth) {
       resolveAuth(data)
-      resolveAuth = rejectAuth = null
+      resolveAuth = rejectAuth = undefined
     }
   }
   else if (rejectAuth) {
     rejectAuth(data)
-    resolveAuth = rejectAuth = null
+    resolveAuth = rejectAuth = undefined
+  }
+})
+
+eventEmitter.addListener('pay_response', function (data) {
+  if (data.code === 0) {
+    if (resolvePay) {
+      resolvePay(data)
+      resolvePay = rejectPay = undefined
+    }
+  }
+  else if (rejectPay) {
+    rejectPay(data)
+    resolvePay = rejectPay = undefined
   }
 })
 
@@ -27,12 +42,12 @@ eventEmitter.addListener('message_response', function (data) {
   if (data.code === 0) {
     if (resolveMessage) {
       resolveMessage(data)
-      resolveMessage = rejectMessage = null
+      resolveMessage = rejectMessage = undefined
     }
   }
   else if (rejectMessage) {
     rejectMessage(data)
-    resolveMessage = rejectMessage = null
+    resolveMessage = rejectMessage = undefined
   }
 })
 
@@ -83,6 +98,22 @@ export default {
    */
   open() {
     return RNTWechat.open()
+  },
+
+  /**
+   * 微信支付
+   */
+  pay(options) {
+    return RNTWechat.pay(options)
+      .then(data => {
+        if (data.success) {
+          return new Promise((resolve, reject) => {
+            resolvePay = resolve
+            rejectPay = reject
+          })
+        }
+        return data
+      })
   },
 
   /**

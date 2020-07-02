@@ -1,8 +1,6 @@
 # react-native-pure-wechat
 
-封装微信 SDK，支持 `微信登录` 和 `微信分享`。
-
-> 下个版本支持微信支付
+封装微信 SDK，支持 `微信登录`、`微信支付`、`微信分享`。
 
 SDK 版本：
 
@@ -176,6 +174,23 @@ wechat.sendAuthRequest({
 })
 .catch(() => {
   // 登录失败
+})
+
+// 微信支付（一般透传后端传来的参数，不用管它是什么意思）
+wechat.pay({
+  partnerId: 'partnerId',
+  prepayId: 'prepayId',
+  nonceStr: 'nonceStr',
+  timeStamp: 'timeStamp',
+  package: 'package',
+  sign: 'sign',
+})
+.then(response => {
+  // 财付通返回给商家的信息
+  response.data.returnKey
+})
+.catch(() => {
+  // 支付失败
 })
 
 // 分享文本

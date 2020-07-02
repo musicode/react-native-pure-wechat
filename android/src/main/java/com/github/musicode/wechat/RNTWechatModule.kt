@@ -14,6 +14,8 @@ import com.tencent.mm.opensdk.constants.ConstantsAPI
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp
 import com.tencent.mm.opensdk.modelmsg.*
+import com.tencent.mm.opensdk.modelpay.PayReq
+import com.tencent.mm.opensdk.modelpay.PayResp
 import com.tencent.mm.opensdk.openapi.IWXAPI
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
@@ -27,6 +29,8 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         private lateinit var api: IWXAPI
 
+        private var wechatAppId = ""
+
         private var wechatModule: RNTWechatModule? = null
 
         private var wechatLoadImage: ((String, (Bitmap?) -> Unit) -> Unit)? = null
@@ -39,6 +43,7 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
             api = WXAPIFactory.createWXAPI(app, appId, true)
 
             // 将应用的 appId 注册到微信
+            wechatAppId = appId
             api.registerApp(appId)
 
             // 建议动态监听微信启动广播进行注册到微信
@@ -97,6 +102,25 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
 
         val map = Arguments.createMap()
         map.putBoolean("success", api.openWXApp())
+
+        promise.resolve(map)
+
+    }
+
+    @ReactMethod
+    fun pay(options: ReadableMap, promise: Promise) {
+
+        val req = PayReq()
+        req.appId = wechatAppId
+        req.partnerId = options.getString("partnerId")
+        req.prepayId = options.getString("prepayId")
+        req.nonceStr = options.getString("nonceStr")
+        req.timeStamp = options.getString("timeStamp")
+        req.packageValue = options.getString("package")
+        req.sign = options.getString("sign")
+
+        val map = Arguments.createMap()
+        map.putBoolean("success", api.sendReq(req))
 
         promise.resolve(map)
 
@@ -414,16 +438,23 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
         when (baseResp) {
             is SendAuth.Resp -> {
                 if (code == 0) {
-                    val resp = baseResp
                     val data = Arguments.createMap()
-                    data.putString("code", resp.code)
-                    data.putString("state", resp.state)
-                    data.putString("url", resp.url)
-                    data.putString("lang", resp.lang)
-                    data.putString("country", resp.country)
+                    data.putString("code", baseResp.code)
+                    data.putString("state", baseResp.state)
+                    data.putString("url", baseResp.url)
+                    data.putString("lang", baseResp.lang)
+                    data.putString("country", baseResp.country)
                     map.putMap("data", data)
                 }
                 sendEvent("auth_response", map)
+            }
+            is PayResp -> {
+                if (code == 0) {
+                    val data = Arguments.createMap()
+                    data.putString("returnKey", baseResp.returnKey)
+                    map.putMap("data", data)
+                }
+                sendEvent("pay_response", map)
             }
             is SendMessageToWX.Resp -> {
                 // 没啥新属性...

@@ -93,6 +93,18 @@ options:(NSDictionary<NSString*, id> *)options {
         [self sendEventWithName:@"auth_response" body:body];
 
     }
+    // 微信支付
+    else if ([resp isKindOfClass:[PayResp class]]) {
+        
+        if (code == 0) {
+            PayResp *r = (PayResp *)resp;
+            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+            data[@"returnKey"] = r.returnKey;
+        }
+
+        [self sendEventWithName:@"pay_response" body:body];
+        
+    }
     // 微信分享
     else if ([resp isKindOfClass:[SendMessageToWXResp class]]) {
 
@@ -107,6 +119,7 @@ options:(NSDictionary<NSString*, id> *)options {
         [self sendEventWithName:@"message_response" body:body];
 
     }
+    
 }
 
 RCT_EXPORT_METHOD(isInstalled:(RCTPromiseResolveBlock)resolve
@@ -131,6 +144,26 @@ RCT_EXPORT_METHOD(open:(RCTPromiseResolveBlock)resolve
     resolve(@{
         @"success": @(success)
     });
+}
+
+RCT_EXPORT_METHOD(pay:(NSDictionary*)options
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    
+    PayReq *req = [[PayReq alloc] init];
+    req.partnerId = [RCTConvert NSString:options[@"partnerId"]];
+    req.prepayId = [RCTConvert NSString:options[@"prepayId"]];
+    req.nonceStr = [RCTConvert NSString:options[@"nonceStr"]];
+    req.timeStamp = [RCTConvert int:options[@"timeStamp"]];
+    req.package = [RCTConvert NSString:options[@"package"]];
+    req.sign = [RCTConvert NSString:options[@"sign"]];
+    
+    [WXApi sendReq:req completion:^(BOOL success) {
+        resolve(@{
+            @"success": @(success)
+        });
+    }];
+    
 }
 
 RCT_EXPORT_METHOD(sendAuthRequest:(NSDictionary*)options

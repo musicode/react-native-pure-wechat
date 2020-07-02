@@ -436,6 +436,14 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
         map.putString("msg", baseResp.errStr)
 
         when (baseResp) {
+            is PayResp -> {
+                if (code == 0) {
+                    val data = Arguments.createMap()
+                    data.putString("returnKey", baseResp.returnKey)
+                    map.putMap("data", data)
+                }
+                sendEvent("pay_response", map)
+            }
             is SendAuth.Resp -> {
                 if (code == 0) {
                     val data = Arguments.createMap()
@@ -447,14 +455,6 @@ class RNTWechatModule(private val reactContext: ReactApplicationContext) : React
                     map.putMap("data", data)
                 }
                 sendEvent("auth_response", map)
-            }
-            is PayResp -> {
-                if (code == 0) {
-                    val data = Arguments.createMap()
-                    data.putString("returnKey", baseResp.returnKey)
-                    map.putMap("data", data)
-                }
-                sendEvent("pay_response", map)
             }
             is SendMessageToWX.Resp -> {
                 // 没啥新属性...

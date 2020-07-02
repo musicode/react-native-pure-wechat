@@ -51,6 +51,7 @@ options:(NSDictionary<NSString*, id> *)options {
 
 - (NSArray<NSString *> *)supportedEvents {
   return @[
+      @"pay_response",
       @"auth_response",
       @"message_response",
   ];
@@ -77,8 +78,20 @@ options:(NSDictionary<NSString*, id> *)options {
     body[@"code"] = @(code);
     body[@"msg"] = resp.errStr;
 
+    // 微信支付
+    if ([resp isKindOfClass:[PayResp class]]) {
+        
+        if (code == 0) {
+            PayResp *r = (PayResp *)resp;
+            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+            data[@"returnKey"] = r.returnKey;
+        }
+
+        [self sendEventWithName:@"pay_response" body:body];
+        
+    }
     // 微信登录
-    if ([resp isKindOfClass:[SendAuthResp class]]) {
+    else if ([resp isKindOfClass:[SendAuthResp class]]) {
 
         if (code == 0) {
             SendAuthResp *r = (SendAuthResp *)resp;
@@ -92,18 +105,6 @@ options:(NSDictionary<NSString*, id> *)options {
 
         [self sendEventWithName:@"auth_response" body:body];
 
-    }
-    // 微信支付
-    else if ([resp isKindOfClass:[PayResp class]]) {
-        
-        if (code == 0) {
-            PayResp *r = (PayResp *)resp;
-            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-            data[@"returnKey"] = r.returnKey;
-        }
-
-        [self sendEventWithName:@"pay_response" body:body];
-        
     }
     // 微信分享
     else if ([resp isKindOfClass:[SendMessageToWXResp class]]) {
@@ -154,7 +155,7 @@ RCT_EXPORT_METHOD(pay:(NSDictionary*)options
     req.partnerId = [RCTConvert NSString:options[@"partnerId"]];
     req.prepayId = [RCTConvert NSString:options[@"prepayId"]];
     req.nonceStr = [RCTConvert NSString:options[@"nonceStr"]];
-    req.timeStamp = [RCTConvert int:options[@"timeStamp"]];
+    req.timeStamp = [RCTConvert NSString:options[@"timeStamp"]].longLongValue;
     req.package = [RCTConvert NSString:options[@"package"]];
     req.sign = [RCTConvert NSString:options[@"sign"]];
     

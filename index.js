@@ -52,14 +52,16 @@ eventEmitter.addListener('message_response', function (data) {
 })
 
 function shareMessage(promise) {
-  return promise.then(data => {
-    if (data.success) {
-      return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
+    promise.then(data => {
+      if (data.success) {
         resolveMessage = resolve
         rejectMessage = reject
-      })
-    }
-    return data
+      }
+      else {
+        reject(data)
+      }
+    })
   })
 }
 
@@ -104,32 +106,38 @@ export default {
    * 微信支付
    */
   pay(options) {
-    return RNTWechat.pay(options)
-      .then(data => {
-        if (data.success) {
-          return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      RNTWechat
+        .pay(options)
+        .then(data => {
+          if (data.success) {
             resolvePay = resolve
             rejectPay = reject
-          })
-        }
-        return data
-      })
+          }
+          else {
+            reject(data)
+          }
+        })
+    })
   },
 
   /**
    * 微信登录
    */
   sendAuthRequest(options) {
-    return RNTWechat.sendAuthRequest(options)
-      .then(data => {
-        if (data.success) {
-          return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      RNTWechat
+        .sendAuthRequest(options)
+        .then(data => {
+          if (data.success) {
             resolveAuth = resolve
             rejectAuth = reject
-          })
-        }
-        return data
-      })
+          }
+          else {
+            reject(data)
+          }
+        })
+    })
   },
 
   /**

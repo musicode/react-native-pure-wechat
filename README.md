@@ -98,10 +98,10 @@ react-native link react-native-pure-wechat
 
 在 [微信开放平台](https://open.weixin.qq.com/) 获取 `appId`。
 
-在你的包名相应目录下新建一个 `wxapi` 目录，并在该 `wxapi` 目录下新增一个 `WXEntryActivity` 类，该类继承自 `Activity`。
+在你的包名相应目录下新建一个 `wechat` 目录，并在该 `wechat` 目录下新增一个 `WXEntryActivity` 类，该类继承自 `Activity`。
 
 ```kotlin
-package your-package-name.wxapi
+package your-package-name.wechat
 
 import android.app.Activity
 import android.os.Bundle
@@ -118,16 +118,26 @@ class WXEntryActivity : Activity() {
 }
 ```
 
-在 `manifest` 文件里面加上 `exported` 和 `launchMode` 属性，其中 `exported` 设置为 `true`， `launchMode` 设置为 `singleTask`：
+在 `manifest` 文件的 `application` 节点下新增一个 `activity` 和两个 `activity-alias`，里面加上 `exported` 和 `launchMode` 属性，其中 `exported` 设置为 `true`， `launchMode` 设置为 `singleTask`：
 
 ```xml
 <activity
-    android:name=".wxapi.WXEntryActivity"
+    android:name=".wechat.WXEntryActivity"
     android:label="@string/app_name"
     android:theme="@android:style/Theme.Translucent.NoTitleBar"
     android:exported="true"
-    android:launchMode="singleTask"
-/>
+    android:launchMode="singleTask" />
+
+<activity-alias
+    android:name="${applicationId}.wxapi.WXEntryActivity"
+    android:exported="true"
+    android:targetActivity=".wechat.WXEntryActivity" />
+
+<!-- 不要微信支付可以删掉下面这个 -->
+<activity-alias
+    android:name="${applicationId}.wxapi.WXPayEntryActivity"
+    android:exported="true"
+    android:targetActivity=".wechat.WXEntryActivity" />
 ```
 
 最后，在 `MainApplication` 的 `onCreate` 方法进行初始化：
@@ -186,7 +196,7 @@ wechat.pay({
   sign: 'sign',
 })
 .then(response => {
-  // 财付通返回给商家的信息
+  // 财付通返回给商家的信息（好像也没什么用...）
   response.data.returnKey
 })
 .catch(() => {

@@ -1,5 +1,7 @@
 # react-native-pure-wechat
 
+> 此库已废弃，请移步[新库](https://github.com/react-native-hero/wechat)
+
 封装微信 SDK，支持 `微信登录`、`微信支付`、`微信分享`。
 
 SDK 版本：
